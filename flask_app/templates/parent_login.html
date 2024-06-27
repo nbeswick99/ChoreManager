@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container-bg">
+        <div class="nav-bar flex align-center">
+            <h1>Chore Manager</h1>
+        </div>
+        <div class="card">
+            <h1>Login</h1>
+            <form action="/parent/login/process" method="POST" class="form flex justify-between col gap">
+                <div class="flex justify-between">
+                    <label for="email"> Email: </label>
+                    <input type="text" name="email"> 
+                </div>
+                <div class="flex justify-between">
+                    <label for="password"> Password: </label>
+                    <input type="password" name="password">
+                </div>
+                <button type="submit" class="button"> Login </button>
+            </form>
+            <div class="flex justify-between">
+                <a href="/register" class="links">Register</a>
+                <a href="/child/login" class="links">Child Login</a>
+            </div>
+            <div>
+                {% with messages = get_flashed_messages(category_filter=["parent_login"]) %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="flash">{{message}}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

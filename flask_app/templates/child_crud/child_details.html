@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container-bg">
+        <div class="nav-bar flex align-center justify-between">
+            <div>
+                <h1>Chore Manager</h1>
+            </div>
+            <div>
+                <a href="/parent/{{parent_id}}/dashboard" class="links">Dashboard</a>
+                <a href="/parent/{{parent_id}}/chores" class="links">Chores</a>
+                <a href="/parent/{{parent_id}}/rewards" class="links">Rewards</a>
+                <a href="/logout" class="links">Sign Out</a>
+            </div>
+        </div>
+        <div class="flex gap">
+            <div class="card-2">
+                <h1>{{child.first_name}}</h1>
+                <div class="flex justify-between form">
+                    <h2>{{child.username}}</h2>
+                    <h2>Created On: {{child.created_at.strftime('%m/%d/%Y')}}</h2>
+                </div>
+                <div class="flex justify-between">
+                    <div>
+                        <a href="/parent/{{parent_id}}/child/{{child.id}}/edit" class="links form">Edit</a>
+                        <form action="/parent/{{parent_id}}/child/{{child.id}}/delete" method="POST" class="form">
+                            <button type="submit" class="delete">Delete</button>
+                        </form>
+                    </div>
+                    <a href="/parent/{{parent_id}}/children" class="links">Back to Children</a>
+                </div>
+            </div>
+            <div class="card-1 flex align-center justify-between">
+                <h3>Add Chore</h3>
+                <form action="/parent/{{parent_id}}/child/{{child.id}}/assign/chore" method="POST" class="flex gap">
+                    <input type="hidden" name="child_id" value="{{child.id}}">
+                    <select name="chore_id" id="chore_id">
+                        {%for each in chores%}
+                        <option value="{{each.id}}">{{each.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="submit" class="button">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

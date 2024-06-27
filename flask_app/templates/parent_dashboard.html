@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container-bg">
+        <div class="nav-bar flex align-center justify-between">
+            <div class="flex gap align-center">
+                <h1>Chore Manager</h1>
+                <p>Welcome, {{parent.first_name}}</p>
+            </div>
+            <div class="flex gap">
+                <a href="/parent/{{parent.id}}/children" class="links">Children</a>
+                <a href="/parent/{{parent.id}}/chores" class="links">Chores</a>
+                <a href="/parent/{{parent.id}}/rewards" class="links">Rewards</a>
+                <a href="/logout" class="links">Sign Out</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

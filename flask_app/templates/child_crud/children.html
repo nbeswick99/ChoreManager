@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}
+    
+    
+    
+    ">
+</head>
+<body>
+    <div class="container-bg">
+        <div class="nav-bar flex align-center justify-between">
+            <div class="flex align-center">
+                <h1>Chore Manager</h1>
+            </div>
+            <div class="flex gap">
+                <a href="/parent/{{parent_id}}/dashboard" class="links">Dashboard</a>
+                <a href="/parent/{{parent_id}}/chores" class="links">Chores</a>
+                <a href="/parent/{{parent_id}}rewards" class="links">Rewards</a>
+                <a href="/logout" class="links">Sign Out</a>
+            </div>
+        </div>
+        <div class="card">
+            <div>
+                <h1>Children</h1>
+            </div>
+            <div>
+                {% for each_child in children%}
+                <div class="flex justify-between form">
+                    <h2>{{each_child.first_name}}</h2>
+                    <a href="/parent/{{parent_id}}/child/{{each_child.id}}" class="links">details</a>
+                </div>
+                {%for each_chore in each_child.chores%}
+                <div>
+                    <p class="form">{{each_chore.name}}</p>
+                </div>
+                {% endfor %}
+                {% endfor %}
+            </div>
+            <div>
+                <a href="/parent/{{parent_id}}/add/child" class="links">Add Child</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

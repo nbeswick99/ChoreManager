@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container-bg">
+        <div class="nav-bar flex align-center justify-between">
+            <div>
+                <h1>Chore Manager</h1>
+            </div>
+            <div>
+                <a href="/parent/{{parent_id}}/dashboard" class="links">Dashboard</a>
+                <a href="/parent/{{parent_id}}chores" class="links">Chores</a>
+                <a href="/parent/{{parent_id}}rewards" class="links">Rewards</a>
+                <a href="/logout" class="links">Sign Out</a>
+            </div>
+        </div>
+        <div class="card">
+            <h1>Edit Child</h1>
+            <form action="/parent/{{parent_id}}/child/{{child.id}}/edit/process" method="POST" class="form flex col gap">
+                <input type="hidden" name="parent_id" value="{{parent_id}}">
+                <div class="flex justify-between">
+                    <label for="username" class="form-label">Username: </label>
+                    <input type="text" name="username" value="{{child.username}}" class="form-control">
+                </div>
+                <div class="flex justify-between">
+                    <label for="first_name" class="form-label">First Name: </label>
+                    <input type="text" name="first_name" value="{{child.first_name}}" class="form-control">
+                </div>
+                <button type="submit" class="button"> Register </button>
+            </form>
+            <div class="flex justify-between">
+                <a href="/parent/{{parent_id}}/child/{{child.id}}" class="links">Back to child</a>
+                <form action="/parent/{{parent_id}}/child/{{child.id}}/delete" method="POST">
+                    <button type="submit" class="delete">Delete</button>
+                </form>
+            </div>
+            <div>
+                {% with messages = get_flashed_messages(category_filter=["child_register"]) %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="flash">{{message}}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

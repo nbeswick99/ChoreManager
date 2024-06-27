@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <div>
+            <h1>Chore Manager</h1>
+            <p>Welcome, (Parent)</p>
+        </div>
+        <div>
+            <a href="/parent/{{parent_id}}/children">Children</a>
+            <a href="/parent/{{parent_id}}/dashboard">Dashboard</a>
+            <a href="/parent/{{prarent_id}}/rewards">Rewards</a>
+            <a href="/logout">Sign Out</a>
+        </div>
+    </div>
+    <div>
+        <h1>{{chore.name}}</h1>
+        <h2></h2>
+        <div>
+            <h2>Chore Reward: {{chore.reward}} Chore Bucks</h2>
+            <h2>Updated On: {{chore.updated_at.strftime('%m/%d/%Y')}}</h2>
+        </div>
+        <div>
+            <div>
+                <h2>Reoccuring?</h2>
+                {% if chore.reoccuring == 0 %}
+                <h2>No</h2>
+                {% elif chore.reoccuring == 1 %}
+                <h2>Daily</h2>
+                {% elif chore.reoccuring == 2 %}
+                <h2>Weekly</h2>
+                {% elif chore.reoccuring == 3 %}
+                <h2>Monthly</h2>
+                {% endif %}
+            </div>
+            <div>
+                <h2>Needs Confirmed?</h2>
+                {% if chore.needs_confirmed == 0%}
+                <h2>No</h2>
+                {% else %}
+                <h2>Yes</h2>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <h2>Description: </h2>
+            <p>{{chore.description}}</p>
+        </div>
+        <div>
+            <div>
+                <a href="/parent/{{parent_id}}/chore/{{chore.id}}/edit">Edit</a>
+                <form action="/parent/{{parent_id}}/chore/{{chore.id}}/delete" method="POST">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+            <a href="/parent/{{parent_id}}/chores">Back to Chores</a>
+        </div>
+    </div>
+</body>
+</html>

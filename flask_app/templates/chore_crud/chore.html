@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <div>
+            <h1>Chore Manager</h1>
+            <p>Welcome, {{parent.first_name}}</p>
+        </div>
+        <div>
+            <a href="/parent/{{parent.id}}/children">Children</a>
+            <a href="/parent/{{parent.id}}/dashboard">Dashboard</a>
+            <a href="/parent/{{parent.id}}/rewards">Rewards</a>
+            <a href="/logout">Sign Out</a>
+        </div>
+    </div>
+    <div>
+        <div>
+            <h1>Chores</h1>
+        </div>
+        <div>
+            {% for each_chore in parent.chores %}
+            <div>
+                <h2>{{each_chore.name}}</h2>
+                <a href="/parent/{{parent.id}}/chore/{{each_chore.id}}">details</a>
+            </div>
+            {% endfor %}
+        </div>
+        <div>
+            <a href="/parent/{{parent.id}}/add/chore">Add Chore</a>
+        </div>
+    </div>
+</body>
+</html>

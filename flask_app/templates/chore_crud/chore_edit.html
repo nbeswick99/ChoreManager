@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>Chore Manager</h1>
+    </div>
+    <div>
+        <h1>Register</h1>
+        <form action="/parent/{{parent_id}}/chore/{{chore.id}}/edit/process" method="POST" class="d-flex flex-column">
+            <input type="hidden" name="chore_id" value="{{chore.id}}">
+            <div>
+                <label for="name" class="form-label">Name: </label>
+                <input type="text" name="name" value="{{chore.name}}">
+            </div>
+            <div>
+                <label for="reward">Chore Bucks: </label>
+                <select name="reward" id="reward" >
+                    {%for i in range(1,100)%}
+                    {% if chore.reward == i %}
+                    <option value="{{i}}" selected>{{i}}</option>
+                    {% else %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <p>Reoccuring?</p>
+                <div>
+                    <input type="radio" id="No" name="reoccuring" value="0" {% if chore.reoccuring == 0 %} checked {%endif%}>
+                    <label for="No">No</label>
+                    <input type="radio" id="daily" name="reoccuring" value="1" {% if chore.reoccuring == 1 %} checked {%endif%}>
+                    <label for="daily">Daily</label>
+                    <input type="radio" id="weekly" name="reoccuring" value="2" {% if chore.reoccuring == 2 %} checked {%endif%}>
+                    <label for="weekly">Weekly</label>
+                    <input type="radio" id="monthly" name="reoccuring" value="3" {% if chore.reoccuring == 3 %} checked {%endif%}>
+                    <label for="monthly">Monthly</label>
+                </div>
+            </div>
+            <div>
+                <p>Needs Confirmed?</p>
+                <div>
+                    <input type="radio" id="yes" name="needs_confirmed" value="1" {% if chore.needs_confirmed == 0 %} checked {%endif%}>
+                    <label for="yes">Yes</label>
+                    <input type="radio" id="no" name="needs_confirmed" value="0" {% if chore.needs_confirmed == 1 %} checked {%endif%}>
+                    <label for="no">No</label>
+                </div>
+            </div>
+            <div>
+                <label for="description" class="form-label">Description: </label>
+                <textarea name="description" id="description" cols="30" rows="10">{{chore.description}}</textarea>
+            </div>
+            <button type="submit" class="mt-3 w-50 btn btn-primary"> Submit </button>
+        </form>
+        <a href="/parent/{{parent_id}}/chores">Back to chores</a>
+        <form action="/parent/{{parent_id}}/chore/{{chore.id}}/delete" method="POST">
+            <button type="submit">Delete</button>
+        </form>
+        <div>
+            {% with messages = get_flashed_messages(category_filter=["child_register"]) %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{message}}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</body>
+</html>
