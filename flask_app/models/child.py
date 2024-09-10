@@ -1,12 +1,17 @@
 from flask import flash 
 from flask_app.config.pymysqlconnection import MySQLConnection
 from flask_app.models.chore import Chore
+from flask_app.models.reward import Reward
 from flask_app import db_name
 import re
 
+
+# Child Regex 
 USERNAME_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+$')
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
 PASSWORD_REGEX = re.compile(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
+
+# Child class
 class Child:
     def __init__(self, data) -> None:
         self.id = data["id"]
@@ -18,6 +23,7 @@ class Child:
         self.chores = []
         self.parent = None
 
+    #Create new Child and associate them with a parent
     @classmethod
     def create_child(cls, data):
         query = """

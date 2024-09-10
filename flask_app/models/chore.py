@@ -1,6 +1,5 @@
 from flask import flash 
 from flask_app.config.pymysqlconnection import MySQLConnection
-from flask_app.models.parent import Parent
 from flask_app import db_name
 
 class Chore:
@@ -14,37 +13,9 @@ class Chore:
         self.created_at = data["created_at"]
         self.updated_at = data["updated_at"]
         self.parent = None
-
-    @classmethod
-    def all_chores_with_parents(cls, parent_id):
-        data = {
-            "id": parent_id
-        }
-        query = """
-                select * from chores
-                LEFT JOIN parents ON parent_id = parents.id
-                WHERE parent_id = %(id)s;
-                """
-        results = MySQLConnection(db_name).query_db(query, data)
-        if results:
-            parent_dict = {
-                "id": results[0]["parents.id"],
-                "email": results[0]["email"],
-                "first_name": results[0]["first_name"],
-                "last_name": results[0]["last_name"],
-                "password": results[0]["password"],
-                "created_at": results[0]["parents.created_at"],
-                "updated_at": results[0]["parents.updated_at"]
-            }
-            parent = Parent(parent_dict)
-            for each_chore in results:
-                chore = cls(each_chore)
-                parent.chores.append(chore)
-            return parent
-        else:
-            parent = Parent.get_one_by_id(parent_id)
-            return parent
+        self.children = []
         
+    #Create Chore 
     @classmethod
     def create_chore(cls, data):
         query = """
@@ -54,6 +25,7 @@ class Chore:
         results = MySQLConnection(db_name).query_db(query, data)
         return results
     
+    #Get All Chores - May not be needed
     @classmethod
     def get_all_chores(cls):
         query = """
@@ -66,16 +38,8 @@ class Chore:
             chore = cls(each)
             chores.append(chore)
         return chores
-    
-    @classmethod
-    def add_chore_to_child(cls, data):
-        query = """
-                INSERT INTO chores_has_children (chore_id, child_id)
-                VALUES (%(chore_id)s, %(child_id)s);
-                """
-        results = MySQLConnection(db_name).query_db(query, data)
-        return results
 
+    #Get one chore by chore ID
     @classmethod
     def get_one_by_id(cls, chore_id):
         query = """
@@ -89,8 +53,9 @@ class Chore:
         results = MySQLConnection(db_name).query_db(query, data)
         return cls(results[0])
     
+    #Update Chore
     @classmethod
-    def edit_chore(cls, chore_id, data):
+    def update_chore(cls, chore_id, data):
         updated_form = {
             **data,
             "id": chore_id
@@ -109,28 +74,27 @@ class Chore:
     
     @classmethod
     def delete_chore(cls, chore_id):
-        updated_id = {
+        delete_id = {
             "id": chore_id
         }
-        print(updated_id)
         query = """
                 DELETE FROM chores
                 WHERE id = %(id)s;
                 """
-        results = MySQLConnection(db_name).query_db(query, updated_id)
+        results = MySQLConnection(db_name).query_db(query, delete_id)
         return results
     
     @staticmethod
-    def validate_chore(data):
+    def validate_chore(chore):
         is_valid = True
-        if not data["name"]:
+        if not chore["name"]:
             is_valid = False
-        if not data["reward"]:
+        if not chore["reward"]:
             is_valid = False
-        if not "needs_confirmed" in data:
+        if not "needs_confirmed" in chore:
             is_valid = False
-        if not "reoccuring" in data:
+        if not "reoccuring" in chore:
             is_valid = False
-        if not data["description"]:
+        if not chore["description"]:
             is_valid = False
         return is_valid
