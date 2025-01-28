@@ -23,7 +23,7 @@ def add_chore(parent_id):
 @app.route("/parent/<int:parent_id>/add/chore/process", methods=["POST"])
 def process_chore(parent_id):
 
-    #Check the form submission against hte validation 
+    #Check the form submission against the validation 
     if not Chore.validate_chore(request.form):
         #redirect back to the chore form if the 
         return redirect(f"/parent/{parent_id}/add/chore")

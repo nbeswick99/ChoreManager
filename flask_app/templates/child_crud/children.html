@@ -28,17 +28,21 @@
                 <h1>Children</h1>
             </div>
             <div>
-                {% for each_child in children%}
-                <div class="flex justify-between form">
-                    <h2>{{each_child.first_name}}</h2>
-                    <a href="/parent/{{parent_id}}/child/{{each_child.id}}" class="links">details</a>
-                </div>
-                {%for each_chore in each_child.chores%}
-                <div>
-                    <p class="form">{{each_chore.name}}</p>
-                </div>
+                {% if parent.children %}
+                {% for each_child in parent.children %}
+                    <div class="flex justify-between form">
+                        <h2>{{each_child.first_name}}</h2>
+                        <a href="/parent/{{parent_id}}/child/{{each_child.id}}" class="links">details</a>
+                    </div>
+                    {% if each_child.chores == None %}
+                        {%for each_chore in each_child.chores%}
+                    <div>
+                        <p class="form">{{each_chore.name}}</p>
+                    </div>
+                        {% endfor %}
+                    {% endif %}
                 {% endfor %}
-                {% endfor %}
+                {% endif %} 
             </div>
             <div>
                 <a href="/parent/{{parent_id}}/add/child" class="links">Add Child</a>

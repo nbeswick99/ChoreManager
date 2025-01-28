@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, session, flash
+from flask import render_template, redirect, request, session, flash, jsonify
 from flask_app import app 
 from flask_app.models.parent import Parent
 from flask_app.models.child import Child
@@ -8,13 +8,42 @@ bcrypt = Bcrypt(app)
 
 @app.route("/parent/<int:id>/children")
 def display_children(id):
-    children = Child.get_child_with_chores(id)
-    return render_template("child_crud/children.html", parent_id = id, children= children)
+    parent = Parent.get_children_with_chores(id)
+
+    parent_data = {
+        "id": parent.id, 
+        "email": parent.email,
+        "first_name": parent.first_name,
+        "last_name": parent.last_name,
+        "children": [],
+        "chores": []
+    }
+
+    for each_child in parent.children: 
+        child = {
+            "child_id": each_child.id,
+            "username": each_child.username,
+            "first_name": each_child.first_name,
+            "chores": []
+        }
+        for each_chore in each_child.chores:
+            chore = {
+                "chore_id": each_chore.chore_id,
+                "name": each_chore.name,
+                "reward": each_chore.reoccuring,
+                "needs_confiremd": each_chore.needs_confirmed,
+                "description": each_chore.description
+                }
+            child.append(chore)
+        parent.append(child)
+    
+
+    return jsonify(parent_data)
+    # return render_template("child_crud/children.html", parent_id = id, parent = parent)
 
 @app.route("/parent/<int:parent_id>/child/<int:child_id>/assign/chore", methods = ["POST"])
 def assign_chore(parent_id, child_id):
-    Chore.add_chore_to_child(request.form)
-    print(request.form)
+    Parent.add_chore_to_child(request.form)
     return redirect (f"/parent/{parent_id}/children")
 
 @app.route("/parent/<int:id>/add/child")
@@ -31,7 +60,7 @@ def process_child(id):
         **request.form,
         "password" : pw_hash,
     }
-    child = Child.create_child(upated_form)
+    Child.create_child(upated_form)
     return redirect(f"/parent/{id}/children")
 
 @app.route("/parent/<int:parent_id>/child/<int:child_id>")

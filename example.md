@@ -1,0 +1,20 @@
+[
+    {'id': 3, 
+    'username': 'Jedo125', 
+    'first_name': 'Tommy', 
+    'password': '$2b$12$gP91b6vQJ9uZKp181mtncuOefrfxw1tIRpGo5bgiIWRHhmGtvhjCa', 
+    'created_at': datetime.datetime(2024, 9, 10, 20, 14, 19), 
+    'updated_at': datetime.datetime(2024, 9, 10, 20, 14, 19), 
+    'parent_id': 2, 
+    'chore_id': 6, 
+    'child_id': 3,
+    'chores.id': 6,
+    'name': 'Sweep',
+    'reward': 4,
+    'reoccuring': 1,
+    'needs_confirmed': 1,
+    'description': 'jaksjdfjalskdjf;kla', 
+    'chores.created_at': datetime.datetime(2024, 9, 11, 17, 53, 4), 
+    'chores.updated_at': datetime.datetime(2024, 9, 11, 17, 53, 4), 
+    'chores.parent_id': 2}
+]

@@ -62,40 +62,6 @@ class Child:
         return results
 
     @classmethod
-    def get_child_with_chores(cls, parent_id):
-        data = {
-            "parent_id": parent_id
-        }
-        query = """
-                SELECT * FROM children
-                JOIN chores_has_children ON children.id = chores_has_children.child_id
-                JOIN chores ON chores_has_children.chore_id = chores.id
-                WHERE children.parent_id = %(parent_id)s
-                """
-        results = MySQLConnection(db_name).query_db(query, data)
-        children = []
-        for each_child in results:
-            child = cls(each_child)
-            for each_chore in results:
-                if each_chore["id"] == child.id:
-                    chore_dict = {
-                        "id": each_child["chores.id"],
-                        "name": each_child["name"],
-                        "reward": each_child["reward"],
-                        "reoccuring": each_child["reoccuring"],
-                        "needs_confirmed": each_child["needs_confirmed"],
-                        "description": each_child["description"],
-                        "created_at": each_child["chores.created_at"],
-                        "updated_at": each_child["chores.updated_at"],
-                    }
-                    chore = Chore(chore_dict)
-                    child.chores.append(chore)
-            children.append(child)
-            
-        return children
-
-
-    @classmethod
     def get_one_by_username(cls, user):
         query = """
                 SELECT *
@@ -122,6 +88,42 @@ class Child:
         }
         results = MySQLConnection(db_name).query_db(query, data)
         return cls(results[0])
+    
+    @classmethod
+    def get_child_with_chores(cls, child_id):
+        data = {
+            "id": child_id
+        }
+
+        query = """
+                SELECT *
+                FROM chores
+                LEFT JOIN children ON children_id = children.id
+                WHERE child_id = %(id)s
+                """
+        results = MySQLConnection(db_name).query_db(query, data)
+
+        if results: 
+
+            child_dict = {
+                "id": results[0]["children.id"],
+                "first_name": results[0]["children.first_name"],
+                "username": results[0]["children.username"],
+                "password": results[0]["children.password"],
+                "created_at": results[0]["children.created_at"],
+                "updated_at": results[0]["children.updated_at"],
+            }
+
+            child = Child(child_dict)
+
+            for each_chore in results: 
+                chore = Chore(each_chore)
+                child.chores.append(chore)
+            
+            return child
+        else:
+            child = Child.get_one_by_id(child_id)
+            return child
     
 
     @staticmethod

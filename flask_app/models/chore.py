@@ -85,7 +85,7 @@ class Chore:
         return results
     
     @staticmethod
-    def validate_chore(chore):
+    def validate_schore(chore):
         is_valid = True
         if not chore["name"]:
             is_valid = False

@@ -23,9 +23,20 @@ class Reward:
         results = MySQLConnection(db_name).query_db(query, data)
         return results
     
+    @classmethod 
+    def get_all_rewards(cls, data):
+
+        query = """
+                SELECT * 
+                FROM rewards
+                """
+
+        results = MySQLConnection(db_name).query_db(query, data)
+        return results
+
     #Get one by ID
     @classmethod
-    def get_one_by_id(cls, reward_id):
+    def get_one_reward_by_id(cls, reward_id):
         query = """
                 SELECT * 
                 FROM rewards
@@ -69,6 +80,12 @@ class Reward:
     @staticmethod
     def validate_reward(reward):
         is_valid = True
-
+        if not reward["title"]:
+            is_valid = False
+        if not reward["cost"]:
+            is_valid = False
+        if not reward["description"]:
+            is_valid = False
+        
         return is_valid 
         

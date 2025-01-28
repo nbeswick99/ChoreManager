@@ -61,35 +61,106 @@ class Parent:
         results = MySQLConnection(db_name).query_db(query, data)
         return cls(results[0])
     
-    # @classmethod
-    # def get_parent_with_children(cls, parent_id):
-    #     data = {
-    #         "id": parent_id
-    #     }
-    #     query = """
-    #             select * from children
-    #             LEFT JOIN parents ON parent_id = parents.id
-    #             WHERE parent_id = %(id)s;
-    #             """
-    #     results = MySQLConnection(db_name).query_db(query, data)
-    #     if results:
-    #         parent_dict = {
-    #             "id": results[0]["parents.id"],
-    #             "email": results[0]["email"],
-    #             "first_name": results[0]["parents.id"],
-    #             "last_name": results[0]["last_name"],
-    #             "password": results[0]["parents.password"],
-    #             "created_at": results[0]["parents.created_at"],
-    #             "updated_at": results[0]["parents.updated_at"]
-    #         }
-    #         parent = Parent(parent_dict)
-    #         for each_child in results:
-    #             child = Child(each_child)
-    #             parent.children.append(child)
-    #         return parent
-    #     else:
-    #         parent = Parent.get_one_by_id(parent_id)
-    #         return parent
+    #get children with chores 
+    @classmethod
+    def get_children_with_chores(cls, parent_id):
+       #set data to parent to include Parent ID for query 
+        data = {
+            "parent_id": parent_id
+        }
+       
+       #Query data base to return the all children and chores assigned to them. 
+       # (Children without chores will have "None" for the Keys/columns related to chores)
+        query = """
+                SELECT * FROM children
+                LEFT JOIN chores_has_children ON children.id = chores_has_children.child_id
+                LEFT JOIN chores ON chores_has_children.chore_id = chores.id
+
+                WHERE children.parent_id = %(parent_id)s
+                """
+        
+        parent_query = """
+                       SELECT * FROM parents
+                       Where id = %(parent_id)s
+                       """
+        #Results is the data set from SQL database
+        results = MySQLConnection(db_name).query_db(query, data)
+        
+        #Create parent
+
+        parent = Parent.get_one_by_id(parent_id)
+        
+        #Create children list to return 
+        children = []
+        
+        #Check for results else get children with just 
+        if results: 
+            #Iterate through the results list first making to create the children
+            for each_child in results:
+                count = 0
+                if len(children) > 0:
+                    if each_child["id"] == children[count].id:
+                        child = children[count]
+                    else: 
+                        child = Child(each_child)
+                        count += 1                        
+                else: 
+                    child = Child(each_child)
+
+                for each_chore in results:
+                    if each_chore and each_chore["id"] == child.id:
+                        chore_dict = {
+                            "id": each_chore["chores.id"],
+                            "name": each_chore["name"],
+                            "reward": each_chore["reward"],
+                            "reoccuring": each_chore["reoccuring"],
+                            "needs_confirmed": each_chore["needs_confirmed"],
+                            "description": each_chore["description"],
+                            "created_at": each_chore["chores.created_at"],
+                            "updated_at": each_chore["chores.updated_at"],
+                        }
+
+                        chore = Chore(chore_dict)
+
+                        child.chores.append(chore)   
+
+            parent.children = (children)
+            print(parent)
+            return parent
+
+        else: 
+            return Parent.get_children_with_parent_ID(parent_id)
+    
+    #get all children by parent ID
+    @classmethod
+    def get_children_with_parent_ID(cls, parent_id):
+        data = {
+            "id": parent_id
+        }
+        query = """
+                select * from children
+                LEFT JOIN parents ON parent_id = parents.id
+                WHERE parent_id = %(id)s;
+                """
+        results = MySQLConnection(db_name).query_db(query, data)
+        if results:
+            parent_dict = {
+                "id": results[0]["parents.id"],
+                "email": results[0]["email"],
+                "first_name": results[0]["parents.id"],
+                "last_name": results[0]["last_name"],
+                "password": results[0]["parents.password"],
+                "created_at": results[0]["parents.created_at"],
+                "updated_at": results[0]["parents.updated_at"]
+            }
+            parent = Parent(parent_dict)
+            for each_child in results:
+                child = Child(each_child)
+                parent.children.append(child)
+            return parent
+        else:
+            parent = Parent.get_one_by_id(parent_id)
+            return parent
 
     #Allow Parent to get all chores
     @classmethod
@@ -106,8 +177,10 @@ class Parent:
         if results:
             parent_dict = {
                 "id": results[0]["parents.id"],
+                "email": results[0]["email"],
                 "first_name": results[0]["first_name"],
                 "last_name": results[0]["last_name"],
+                "password": results[0]["password"],
                 "created_at": results[0]["parents.created_at"],
                 "updated_at": results[0]["parents.updated_at"]
             }
